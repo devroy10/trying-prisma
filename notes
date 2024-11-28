@@ -47,4 +47,37 @@ we can use @@unique to ensure entries in a table do not have the same specified 
 we can use @@index to create a custom id field instead of maybe using uuid()   e.g @@id([title, authorId]) would genarate an id that is composite of the title and authorId
 
 ==================================================================
-enums
+enums are a good way to specify a list of values that you know are specific. for instance, if you have a group of hard-coded values that you want to have, an enum is a good way to handle that. 
+
+The enum would prevent using any value that isn't declared in it
+
+========================================================
+when trying to run the prisma migration, I encountered errors like unable to add some fields to the table e.g Step 1 Added the required column `role` to the `User` table without a default value. There 
+are 3 rows in this table, it is not possible to execute this step.
+
+This is because I had some data in the users table alrwady which did not conform to the changes /rules made in the schema
+
+so to resolve this, I ran the deleteMany() method to remove pre-existing users. I'm crtical of this mathod because it compromises the integrity of the data already in the dB. I'll research ways on how to handle this.
+
+=============================================================
+after running the most recent migration, I noticed prisma created  a couple of additional tables and foreign keys.
+For example to effect the many-to-many relationship b/w Posts and categories, it created a junction table _CategoryToPost to manage this relationship. It also created Foreign key constraints for A and B.
+Unique composite key to prevent duplicate relationships.
+
+Example:
+
+-- AddForeignKey
+ALTER TABLE "_CategoryToPost" ADD CONSTRAINT "_CategoryToPost_A_fkey" FOREIGN KEY ("A") REFERENCES "Category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_CategoryToPost" ADD CONSTRAINT "_CategoryToPost_B_fkey" FOREIGN KEY ("B") REFERENCES "Post"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+But this could be done once as,
+
+CREATE TABLE "_CategoryToPost" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL,
+    FOREIGN KEY ("A") REFERENCES "Category" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("B") REFERENCES "Post" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY ("A", "B")
+);
