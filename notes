@@ -1,0 +1,29 @@
+Notes for class on learn prisma in 60 minutes
+
+we can create relationships bw fileds in pqL
+
+Types
+1. one-to-one
+2. one-many
+3. many-many
+
+1. one-to-many  
+E.g one user has many posts 
+There are only 2 field type modifiers , 
+    the array one [] which mean there could many of this 
+    and the ? which means it is optional
+
+In practice, it is better to use uuid instead of auto incrementing id's because it is more secure as it is random, and people can not access other's data by changing their id say from 1 to 2.
+
+@relation modifier are used to create relation bw fields of diff models, say you have a author field in Post model, of type User(which is a model on it's own), you can use @relation(fields: [authorId], references: [id]) to create a relation bw the authorId field in the Post model and the id field in the User model.
+
+Sometimes, in our schema, when a handling a one-to-many relation, we may have multiple fields, point to the same model, this causes an error:
+Ambiguous relation detected. The fields `field1` and `field2` in model `model1` both refer to `model2`. Please provide different relation names for them by adding `@relation(<name>)
+
+We can fix this by adding relation names to the field1 and field2 and connecting them in model2 fields. 
+
+Key example can be seen in the writtenPosts and favoritePosts fields in User model . Site the code in the schema.prisma for the solution implementation.
+
+2. many-to-many
+In many-to-many relationships, Prisma handles the creation of Join tables, and handles the relationship between linking the data.
+FOr example the Category model, 
