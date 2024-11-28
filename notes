@@ -8,6 +8,7 @@ Types
 3. many-many
 
 1. one-to-many  
+
 E.g one user has many posts 
 There are only 2 field type modifiers , 
     the array one [] which mean there could many of this 
@@ -25,5 +26,25 @@ We can fix this by adding relation names to the field1 and field2 and connecting
 Key example can be seen in the writtenPosts and favoritePosts fields in User model . Site the code in the schema.prisma for the solution implementation.
 
 2. many-to-many
+
 In many-to-many relationships, Prisma handles the creation of Join tables, and handles the relationship between linking the data.
-FOr example the Category model, 
+For example the Category model, we can a field for posts of type Post[], and create a categorie field of type Category[] in out Psot field.
+This setup doesn't require any @relations.
+So, all of our posts can have many categories and all of our categorie can have many posts.
+
+3. one-to-one
+for example one user, can have one set of user preferences
+Since it is one to one, we can store the userPreferences on either the user Table or the preferences
+A one-to-one relation must use unique fields on the defining side. Either add an `@unique` attribute to the field `userId`
+
+
+==================================================================
+There are field level attributes, but there are also block-level attributes
+Field applires to the fieldBlock level go inside the {} and have two @@ 
+
+we can use @@unique to ensure entries in a table do not have the same specified fields e.g @@unique([email, name]) means in User model means that no 2 users should have the same email and name, both must be unique
+
+we can use @@index to create a custom id field instead of maybe using uuid()   e.g @@id([title, authorId]) would genarate an id that is composite of the title and authorId
+
+==================================================================
+enums
